@@ -7,6 +7,8 @@ import com.amazonaws.services.lambda.runtime.events.ScheduledEvent
 import com.madgag.scala.collection.decorators.*
 import com.theguardian.content.rules.logging.Logging
 import Credentials.fetchKeyFromParameterStore
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.theguardian.aws.apigateway.{ApiGatewayRequest, ApiGatewayResponse}
 import com.gu.contentapi.client.GuardianContentClient
@@ -27,7 +29,9 @@ import scala.jdk.FutureConverters.*
 import scala.util.{Failure, Success}
 import scala.jdk.CollectionConverters.*
 import com.gu.contentapi.client.model.ItemQuery
-import com.amazonaws.util.StringInputStream
+
+import java.io.ByteArrayInputStream
+import java.nio.charset.StandardCharsets
 
 object Lambda extends Logging {
 //
@@ -46,11 +50,20 @@ object Lambda extends Logging {
    * Logic handler
    */
   def go(capiId:String): String = {
-    def getCredentials: GoogleCredentials = {
+    def getCredentials(): GoogleCredentials = {
       val json = fetchKeyFromParameterStore("google-creds.json")
-
-      GoogleCredentials.fromStream(new StringInputStream(json))
+      GoogleCredentials.fromStream(
+         new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
     }
+
+    // Build a new authorized API client service.
+    val APPLICATION_NAME = "pluggable-content-rules"
+    val JSON_FACTORY = GsonFactory.getDefaultInstance
+    val HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport
+    val spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+    val range = "Class Data!A2:E"
+    val service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials()).setApplicationName(APPLICATION_NAME).build
+    val response = service.spreadsheets.values.get(spreadsheetId, range).execute
 
 
     val eventual = for {
