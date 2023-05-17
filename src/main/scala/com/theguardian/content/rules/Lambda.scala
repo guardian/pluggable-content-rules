@@ -7,9 +7,10 @@ import com.amazonaws.services.lambda.runtime.events.ScheduledEvent
 import com.madgag.scala.collection.decorators.*
 import com.theguardian.content.rules.logging.Logging
 import Credentials.fetchKeyFromParameterStore
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.sheets.v4.Sheets
+import com.google.api.services.sheets.v4.{Sheets, SheetsScopes}
 import com.theguardian.aws.apigateway.{ApiGatewayRequest, ApiGatewayResponse}
 import com.gu.contentapi.client.GuardianContentClient
 
@@ -32,6 +33,7 @@ import com.gu.contentapi.client.model.ItemQuery
 
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
+import java.util.Collections
 
 object Lambda extends Logging {
 //
@@ -50,21 +52,22 @@ object Lambda extends Logging {
    * Logic handler
    */
   def go(capiId:String): String = {
-    def getCredentials(): GoogleCredentials = {
+    def getCredentials(): GoogleCredential = {
       val json = fetchKeyFromParameterStore("google-creds.json")
-      GoogleCredentials.fromStream(
-         new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
+
+      GoogleCredential.fromStream(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)))
+        .createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS_READONLY));
     }
 
     // Build a new authorized API client service.
     val APPLICATION_NAME = "pluggable-content-rules"
     val JSON_FACTORY = GsonFactory.getDefaultInstance
     val HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport
-    val spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-    val range = "Class Data!A2:E"
+    val spreadsheetId = "1xwMDLhf7TtbBdBqm7fhB0ynjAXRejmYUtztKKSGm0Fg"
+    val range = "Sheet6!A:F"
     val service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials()).setApplicationName(APPLICATION_NAME).build
     val response = service.spreadsheets.values.get(spreadsheetId, range).execute
-
+    println(response)
 
     val eventual = for {
 
