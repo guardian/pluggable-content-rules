@@ -7,6 +7,7 @@ import com.amazonaws.services.lambda.runtime.events.ScheduledEvent
 import com.madgag.scala.collection.decorators.*
 import com.theguardian.content.rules.logging.Logging
 import Credentials.fetchKeyFromParameterStore
+import com.google.api.services.sheets.v4.Sheets
 import com.theguardian.aws.apigateway.{ApiGatewayRequest, ApiGatewayResponse}
 import com.gu.contentapi.client.GuardianContentClient
 
@@ -26,6 +27,7 @@ import scala.jdk.FutureConverters.*
 import scala.util.{Failure, Success}
 import scala.jdk.CollectionConverters.*
 import com.gu.contentapi.client.model.ItemQuery
+import com.amazonaws.util.StringInputStream
 
 object Lambda extends Logging {
 //
@@ -39,10 +41,16 @@ object Lambda extends Logging {
     new GuardianContentClient(capiKey)
   }
 
+  import com.google.auth.oauth2.GoogleCredentials
   /*
    * Logic handler
    */
   def go(capiId:String): String = {
+    def getCredentials: GoogleCredentials = {
+      val json = fetchKeyFromParameterStore("google-creds.json")
+
+      GoogleCredentials.fromStream(new StringInputStream(json))
+    }
 
 
     val eventual = for {

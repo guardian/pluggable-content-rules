@@ -25,6 +25,12 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.4.5",
   "com.lihaoyi" %% "upickle" % "2.0.0",
   ("com.gu" %% "content-api-client-default" % "19.0.4").cross(CrossVersion.for3Use2_13),
+
+  "com.google.api-client" % "google-api-client" % "2.2.0",
+  "com.google.apis" % "google-api-services-sheets" % "v4-rev20230227-2.0.0",
+  "com.google.auth" % "google-auth-library-credentials" % "1.16.1",
+  "com.google.auth" % "google-auth-library-oauth2-http" % "1.16.1",
+
   "com.madgag" %% "scala-collection-plus" % "0.11",
   "com.google.http-client" % "google-http-client-gson" % "1.42.3",
   "org.scalatest" %% "scalatest" % "3.2.15" % Test,
