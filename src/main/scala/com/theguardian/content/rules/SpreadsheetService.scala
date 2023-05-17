@@ -34,7 +34,7 @@ object SpreadsheetService {
       row <- gridData.getRowData.asScala.toSeq
     } yield for {
       col <- Option(row.getValues).toSeq.flatMap(_.asScala.toSeq)
-    } yield col.getFormattedValue
+    } yield Option(col.getFormattedValue).mkString
   }
 
 

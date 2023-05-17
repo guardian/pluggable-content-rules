@@ -55,10 +55,14 @@ object Lambda extends Logging {
     val ruleData = SpreadsheetService.getData(spreadsheetId)
     //ruleData.foreach(rule => rule.foreach(println(_)))
     println(ruleData.mkString("\n"))
+    val ruleEngine = RuleEngine.fromGrid(ruleData)
+
     val eventual = for {
 
       response <- contentClient.getResponse(ItemQuery(capiId))
-    } yield response.content.get.webTitle
+    } yield {
+      ruleEngine.findRecommendations(com.theguardian.content.rules.model.Context(response.content.get)).mkString(",")
+    }
 
     Await.result(eventual, 40.seconds)
   }
