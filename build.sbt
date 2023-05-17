@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "log4j-over-slf4j" % "2.0.6", //  log4j-over-slf4j provides `org.apache.log4j.MDC`, which is dynamically loaded by the Lambda runtime
   "ch.qos.logback" % "logback-classic" % "1.4.5",
   "com.lihaoyi" %% "upickle" % "2.0.0",
-
+  ("com.gu" %% "content-api-client-default" % "19.0.4").cross(CrossVersion.for3Use2_13),
   "com.madgag" %% "scala-collection-plus" % "0.11",
   "com.google.http-client" % "google-http-client-gson" % "1.42.3",
   "org.scalatest" %% "scalatest" % "3.2.15" % Test,

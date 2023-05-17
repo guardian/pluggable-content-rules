@@ -1,0 +1,3 @@
+Symbol: object ListComplianceItemsResponse
+Error message: 
+Error: dotty.tools.dotc.core.CyclicReference: 

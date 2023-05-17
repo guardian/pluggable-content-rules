@@ -1,0 +1,3 @@
+Symbol: object OpsItemRelatedItemSummary
+Error message: 
+Error: dotty.tools.dotc.core.CyclicReference: 

@@ -1,0 +1,3 @@
+Symbol: object GetOpsItemRequest
+Error message: 
+Error: dotty.tools.dotc.core.CyclicReference: 
