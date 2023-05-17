@@ -55,11 +55,11 @@ Object {
           "S3Bucket": Object {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "ophan/TEST/my-app/pluggable-content-rules.jar",
+          "S3Key": "ophan/TEST/pluggable-content-rules/pluggable-content-rules.jar",
         },
         "Environment": Object {
           "Variables": Object {
-            "APP": "my-app",
+            "APP": "pluggable-content-rules",
             "STACK": "ophan",
             "STAGE": "TEST",
           },
@@ -76,7 +76,7 @@ Object {
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "my-app",
+            "Value": "pluggable-content-rules",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -138,7 +138,7 @@ Object {
                       Object {
                         "Ref": "DistributionBucketName",
                       },
-                      "/ophan/TEST/my-app/pluggable-content-rules.jar",
+                      "/ophan/TEST/pluggable-content-rules/pluggable-content-rules.jar",
                     ],
                   ],
                 },
@@ -159,7 +159,7 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/ophan/my-app",
+                    ":parameter/TEST/ophan/pluggable-content-rules",
                   ],
                 ],
               },
@@ -182,7 +182,7 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/ophan/my-app/*",
+                    ":parameter/TEST/ophan/pluggable-content-rules/*",
                   ],
                 ],
               },
@@ -230,7 +230,7 @@ Object {
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "my-app",
+            "Value": "pluggable-content-rules",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -421,7 +421,7 @@ Object {
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "my-app",
+            "Value": "pluggable-content-rules",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -444,7 +444,7 @@ Object {
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "mylambdapluggablecontentrulesDeployment12D59A1Bdb8cd59e95531740e6d6baf7fd2fe2af": Object {
+    "mylambdapluggablecontentrulesDeployment12D59A1B0ffec6c9cb899ed432cb4ad8168d1b01": Object {
       "DependsOn": Array [
         "mylambdapluggablecontentrulesproxyANY47BAD741",
         "mylambdapluggablecontentrulesproxy663DADE7",
@@ -464,7 +464,7 @@ Object {
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "mylambdapluggablecontentrulesDeployment12D59A1Bdb8cd59e95531740e6d6baf7fd2fe2af",
+          "Ref": "mylambdapluggablecontentrulesDeployment12D59A1B0ffec6c9cb899ed432cb4ad8168d1b01",
         },
         "RestApiId": Object {
           "Ref": "mylambdapluggablecontentrulesF921FE35",
@@ -473,7 +473,7 @@ Object {
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "my-app",
+            "Value": "pluggable-content-rules",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -502,7 +502,7 @@ Object {
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "my-app",
+            "Value": "pluggable-content-rules",
           },
           Object {
             "Key": "gu:cdk:version",
