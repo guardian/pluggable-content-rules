@@ -1,6 +1,8 @@
 .idea*
 target/
 .bsp/
+.metals/
+.bloop/
 project/boot
 logs/
 
