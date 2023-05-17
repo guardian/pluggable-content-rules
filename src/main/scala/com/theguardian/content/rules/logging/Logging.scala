@@ -1,4 +1,4 @@
-package ophan.google.indexing.observatory.logging
+package com.theguardian.content.rules.logging
 
 import net.logstash.logback.marker.LogstashMarker
 import net.logstash.logback.marker.Markers.appendEntries

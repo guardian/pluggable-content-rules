@@ -1,10 +1,10 @@
 import com.gu.riffraff.artifact.BuildInfo
 
-name := "google-search-indexing-observatory"
+name := "pluggable-content-rules"
 
 organization := "com.gu"
 
-description:= "Checking how long it takes content published by news organisations to be available in Google search"
+description:= "A rules-engine service allowing non-dev Guardian staff to express what they want to see displayed on content"
 
 version := "1.0"
 
@@ -27,13 +27,9 @@ libraryDependencies ++= Seq(
 
   "com.madgag" %% "scala-collection-plus" % "0.11",
   "com.google.http-client" % "google-http-client-gson" % "1.42.3",
-  "com.google.apis" % "google-api-services-customsearch" % "v1-rev20210918-2.0.0",
-  "org.scanamo" %% "scanamo" % "1.0.0-M23",
   "org.scalatest" %% "scalatest" % "3.2.15" % Test,
   "org.typelevel" %% "cats-core" % catsVersion,
-  "org.typelevel" %% "alleycats-core" % catsVersion,
-
-  "com.bnsal" % "sitemap-parser" % "1.0.3"
+  "org.typelevel" %% "alleycats-core" % catsVersion
 
 ) ++ Seq("ssm", "url-connection-client").map(artifact => "software.amazon.awssdk" % artifact % "2.19.24")
 
@@ -46,7 +42,7 @@ assemblyJarName := s"${name.value}.jar"
 riffRaffPackageType := assembly.value
 riffRaffArtifactResources := Seq(
   (assembly/assemblyOutputPath).value -> s"${name.value}/${name.value}.jar",
-  file("cdk/cdk.out/GoogleSearchIndexingObservatory-PROD.template.json") -> s"cdk.out/GoogleSearchIndexingObservatory-PROD.template.json",
+  file("cdk/cdk.out/PluggableContentRules-PROD.template.json") -> s"cdk.out/PluggableContentRules-PROD.template.json",
   file("cdk/cdk.out/riff-raff.yaml") -> s"riff-raff.yaml"
 )
 
@@ -55,7 +51,7 @@ assembly / assemblyMergeStrategy := {
   case _ => MergeStrategy.first
 }
 
-buildInfoPackage := "ophan.google.indexing.observatory"
+buildInfoPackage := "com.theguardian.content.rules"
 buildInfoKeys := {
   lazy val buildInfo = BuildInfo(baseDirectory.value)
   Seq[BuildInfoKey](

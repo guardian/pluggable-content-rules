@@ -1,10 +1,10 @@
-package ophan.google.indexing.observatory.logging
+package com.theguardian.content.rules.logging
 
 import ch.qos.logback.classic.spi.ILoggingEvent
 import com.amazonaws.services.lambda.runtime.LambdaRuntimeInternal
 import net.logstash.logback.layout.LogstashLayout
-import ophan.google.indexing.observatory.BuildInfo
-import upickle.default._
+import upickle.default.*
+import com.theguardian.content.rules.BuildInfo
 
 object UniqueIdForVM {
   val id = java.util.UUID.randomUUID.toString

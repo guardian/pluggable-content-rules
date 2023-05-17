@@ -8,7 +8,7 @@ import {Duration} from "aws-cdk-lib";
 import {NoMonitoring} from "@guardian/cdk/lib/constructs/cloudwatch";
 import {AttributeType, Table} from "aws-cdk-lib/aws-dynamodb";
 
-export class GoogleSearchIndexingObservatory extends GuStack {
+export class PluggableContentRules extends GuStack {
   constructor(scope: App, id: string, props: GuStackProps) {
     super(scope, id, props);
     const noMonitoring: NoMonitoring = { noMonitoring: true };

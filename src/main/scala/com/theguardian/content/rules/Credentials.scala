@@ -1,6 +1,6 @@
-package ophan.google.indexing.observatory
+package com.theguardian.content.rules
 
-import ophan.google.indexing.observatory.logging.Logging
+import com.theguardian.content.rules.logging.Logging
 
 case object Credentials extends Logging {
   def fetchKeyFromParameterStore(value: String): String = {

@@ -1,4 +1,4 @@
-package ophan.google.indexing.observatory
+package com.theguardian.content.rules
 
 /**
  * This class isn't used in production, it's only for local testing.

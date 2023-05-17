@@ -2,7 +2,7 @@
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <immediateFlush>true</immediateFlush>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="ophan.google.indexing.observatory.logging.LogstashLayoutWithBuildInfo">
+            <layout class="com.theguardian.content.rules.logging.LogstashLayoutWithBuildInfo">
             </layout>
         </encoder>
     </appender>
