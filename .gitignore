@@ -4,6 +4,8 @@ target/
 .metals/
 .bloop/
 project/boot
+project/.bloop
+project/project/.bloop
 logs/
 
 test-results/
