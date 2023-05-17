@@ -8,7 +8,6 @@ package com.theguardian.content.rules
  * java.lang.NullPointerException errors when invoked as a Lambda -
  * vals are not initialised by the time we come to service the request?!
  */
-object CLIMain extends App {
-
-  Lambda.go()
+@main def main(capiId: String): Unit = {
+  println(Lambda.go(Some(capiId)))
 }
