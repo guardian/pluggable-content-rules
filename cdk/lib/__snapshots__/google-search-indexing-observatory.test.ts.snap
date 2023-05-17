@@ -5,9 +5,37 @@ Object {
   "Metadata": Object {
     "gu:cdk:constructs": Array [
       "GuDistributionBucketParameter",
-      "GuScheduledLambda",
+      "GuApiLambda",
     ],
     "gu:cdk:version": "TEST",
+  },
+  "Outputs": Object {
+    "mylambdapluggablecontentrulesEndpoint8D930A97": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "mylambdapluggablecontentrulesF921FE35",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "mylambdapluggablecontentrulesDeploymentStageprod016B3E54",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
   },
   "Parameters": Object {
     "DistributionBucketName": Object {
@@ -17,71 +45,30 @@ Object {
     },
   },
   "Resources": Object {
-    "TableCD117FA1": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "AttributeDefinitions": Array [
-          Object {
-            "AttributeName": "uri",
-            "AttributeType": "S",
-          },
-        ],
-        "KeySchema": Array [
-          Object {
-            "AttributeName": "uri",
-            "KeyType": "HASH",
-          },
-        ],
-        "ProvisionedThroughput": Object {
-          "ReadCapacityUnits": 5,
-          "WriteCapacityUnits": 5,
-        },
-        "Tags": Array [
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/google-search-indexing-observatory",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "ophan",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::DynamoDB::Table",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "scheduledLambda8A84450D": Object {
+    "mylambdaE03B2284": Object {
       "DependsOn": Array [
-        "scheduledLambdaServiceRoleDefaultPolicyDE6B5E9F",
-        "scheduledLambdaServiceRoleB98DFEFD",
+        "mylambdaServiceRoleDefaultPolicyBDADF1CE",
+        "mylambdaServiceRoleEF0A78B7",
       ],
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "ophan/TEST/google-search-indexing-observatory/google-search-indexing-observatory.jar",
+          "S3Key": "ophan/TEST/my-app/pluggable-content-rules.jar",
         },
         "Environment": Object {
           "Variables": Object {
-            "APP": "google-search-indexing-observatory",
+            "APP": "my-app",
             "STACK": "ophan",
             "STAGE": "TEST",
           },
         },
-        "Handler": "ophan.google.indexing.observatory.Lambda::handler",
+        "Handler": "com.theguardian.content.rules.Lambda::handler",
         "MemorySize": 1024,
         "Role": Object {
           "Fn::GetAtt": Array [
-            "scheduledLambdaServiceRoleB98DFEFD",
+            "mylambdaServiceRoleEF0A78B7",
             "Arn",
           ],
         },
@@ -89,7 +76,7 @@ Object {
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "google-search-indexing-observatory",
+            "Value": "my-app",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -97,7 +84,7 @@ Object {
           },
           Object {
             "Key": "gu:repo",
-            "Value": "guardian/google-search-indexing-observatory",
+            "Value": "guardian/pluggable-content-rules",
           },
           Object {
             "Key": "Stack",
@@ -112,60 +99,7 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "scheduledLambdaServiceRoleB98DFEFD": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "google-search-indexing-observatory",
-          },
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/google-search-indexing-observatory",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "ophan",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "scheduledLambdaServiceRoleDefaultPolicyDE6B5E9F": Object {
+    "mylambdaServiceRoleDefaultPolicyBDADF1CE": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -204,7 +138,7 @@ Object {
                       Object {
                         "Ref": "DistributionBucketName",
                       },
-                      "/ophan/TEST/google-search-indexing-observatory/google-search-indexing-observatory.jar",
+                      "/ophan/TEST/my-app/pluggable-content-rules.jar",
                     ],
                   ],
                 },
@@ -225,7 +159,7 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/ophan/google-search-indexing-observatory",
+                    ":parameter/TEST/ophan/my-app",
                   ],
                 ],
               },
@@ -248,83 +182,476 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/ophan/google-search-indexing-observatory/*",
+                    ":parameter/TEST/ophan/my-app/*",
                   ],
                 ],
               },
             },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "TableCD117FA1",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "scheduledLambdaServiceRoleDefaultPolicyDE6B5E9F",
+        "PolicyName": "mylambdaServiceRoleDefaultPolicyBDADF1CE",
         "Roles": Array [
           Object {
-            "Ref": "scheduledLambdaServiceRoleB98DFEFD",
+            "Ref": "mylambdaServiceRoleEF0A78B7",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "scheduledLambdascheduledLambdarate1minute07D1D4D61": Object {
+    "mylambdaServiceRoleEF0A78B7": Object {
       "Properties": Object {
-        "ScheduleExpression": "rate(1 minute)",
-        "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
-                "scheduledLambda8A84450D",
-                "Arn",
-              ],
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
             },
-            "Id": "Target0",
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "my-app",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/pluggable-content-rules",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "ophan",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
           },
         ],
       },
-      "Type": "AWS::Events::Rule",
+      "Type": "AWS::IAM::Role",
     },
-    "scheduledLambdascheduledLambdarate1minute0AllowEventRulePluggableContentRulesscheduledLambda2A2AC158D4E5E85C": Object {
+    "mylambdapluggablecontentrulesANYA00FB8D7": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "mylambdaE03B2284",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Fn::GetAtt": Array [
+            "mylambdapluggablecontentrulesF921FE35",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": Object {
+          "Ref": "mylambdapluggablecontentrulesF921FE35",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "mylambdapluggablecontentrulesANYApiPermissionPluggableContentRulesmylambdapluggablecontentrules7E3552B1ANYE1390434": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "scheduledLambda8A84450D",
+            "mylambdaE03B2284",
             "Arn",
           ],
         },
-        "Principal": "events.amazonaws.com",
+        "Principal": "apigateway.amazonaws.com",
         "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "mylambdapluggablecontentrulesF921FE35",
+              },
+              "/",
+              Object {
+                "Ref": "mylambdapluggablecontentrulesDeploymentStageprod016B3E54",
+              },
+              "/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "mylambdapluggablecontentrulesANYApiPermissionTestPluggableContentRulesmylambdapluggablecontentrules7E3552B1ANY0F374BA0": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "scheduledLambdascheduledLambdarate1minute07D1D4D61",
+            "mylambdaE03B2284",
             "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "mylambdapluggablecontentrulesF921FE35",
+              },
+              "/test-invoke-stage/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "mylambdapluggablecontentrulesAccountDF85129F": Object {
+      "DeletionPolicy": "Retain",
+      "DependsOn": Array [
+        "mylambdapluggablecontentrulesF921FE35",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "mylambdapluggablecontentrulesCloudWatchRole70AA2E7D",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "mylambdapluggablecontentrulesCloudWatchRole70AA2E7D": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "my-app",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/pluggable-content-rules",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "ophan",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "mylambdapluggablecontentrulesDeployment12D59A1Bdb8cd59e95531740e6d6baf7fd2fe2af": Object {
+      "DependsOn": Array [
+        "mylambdapluggablecontentrulesproxyANY47BAD741",
+        "mylambdapluggablecontentrulesproxy663DADE7",
+        "mylambdapluggablecontentrulesANYA00FB8D7",
+      ],
+      "Properties": Object {
+        "Description": "Pluggable content rules API",
+        "RestApiId": Object {
+          "Ref": "mylambdapluggablecontentrulesF921FE35",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "mylambdapluggablecontentrulesDeploymentStageprod016B3E54": Object {
+      "DependsOn": Array [
+        "mylambdapluggablecontentrulesAccountDF85129F",
+      ],
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "mylambdapluggablecontentrulesDeployment12D59A1Bdb8cd59e95531740e6d6baf7fd2fe2af",
+        },
+        "RestApiId": Object {
+          "Ref": "mylambdapluggablecontentrulesF921FE35",
+        },
+        "StageName": "prod",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "my-app",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/pluggable-content-rules",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "ophan",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "mylambdapluggablecontentrulesF921FE35": Object {
+      "Properties": Object {
+        "Description": "Pluggable content rules API",
+        "Name": "ophan-TEST-pluggable-content-rules",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "my-app",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/pluggable-content-rules",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "ophan",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "mylambdapluggablecontentrulesproxy663DADE7": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "mylambdapluggablecontentrulesF921FE35",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "{proxy+}",
+        "RestApiId": Object {
+          "Ref": "mylambdapluggablecontentrulesF921FE35",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "mylambdapluggablecontentrulesproxyANY47BAD741": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "mylambdaE03B2284",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "mylambdapluggablecontentrulesproxy663DADE7",
+        },
+        "RestApiId": Object {
+          "Ref": "mylambdapluggablecontentrulesF921FE35",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "mylambdapluggablecontentrulesproxyANYApiPermissionPluggableContentRulesmylambdapluggablecontentrules7E3552B1ANYproxy42073990": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "mylambdaE03B2284",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "mylambdapluggablecontentrulesF921FE35",
+              },
+              "/",
+              Object {
+                "Ref": "mylambdapluggablecontentrulesDeploymentStageprod016B3E54",
+              },
+              "/*/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "mylambdapluggablecontentrulesproxyANYApiPermissionTestPluggableContentRulesmylambdapluggablecontentrules7E3552B1ANYproxyC7B0AF29": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "mylambdaE03B2284",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "mylambdapluggablecontentrulesF921FE35",
+              },
+              "/test-invoke-stage/*/*",
+            ],
           ],
         },
       },

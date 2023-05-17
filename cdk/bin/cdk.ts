@@ -4,4 +4,4 @@ import { PluggableContentRules } from "../lib/google-search-indexing-observatory
 import {GuRootExperimental} from "@guardian/cdk/lib/experimental/constructs/root";
 
 const app: App = new GuRootExperimental();
-new PluggableContentRules(app, "PluggableContentRules-PROD", { stack: "ophan", stage: "PROD", env: {region: "eu-west-1"} });
+new PluggableContentRules(app, "PluggableContentRules-PROD", { stack: "pluggable-content-rules", stage: "PROD", env: {region: "eu-west-1"} });
