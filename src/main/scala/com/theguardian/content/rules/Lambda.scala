@@ -27,7 +27,7 @@ import scala.jdk.FutureConverters.*
 import scala.util.{Failure, Success}
 import scala.jdk.CollectionConverters.*
 import com.gu.contentapi.client.model.ItemQuery
-import com.amazonaws.util.StringInputStream
+// import com.amazonaws.util.StringInputStream
 
 object Lambda extends Logging {
 //
@@ -49,7 +49,7 @@ object Lambda extends Logging {
     def getCredentials: GoogleCredentials = {
       val json = fetchKeyFromParameterStore("google-creds.json")
 
-      GoogleCredentials.fromStream(new StringInputStream(json))
+      // GoogleCredentials.fromStream(new StringInputStream(json))
     }
 
 
