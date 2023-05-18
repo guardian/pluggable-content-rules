@@ -5,7 +5,7 @@ case class Rule(criteriaByName: Map[String, String], recommendation: String) {
     val content = context.content
 
     val inSection = criteriaByName.get("if-in-section").forall(requiredSection => content.sectionId.contains(requiredSection))
-    val notInSection = criteriaByName.get("unless-in-section").forall(excludeSection => content.section.forall(_.id != excludeSection))
+    val notInSection = criteriaByName.get("unless-in-section").forall(excludeSection => ! content.sectionId.contains(excludeSection))
     val hasTag = criteriaByName.get("if-has-any-tag-of").forall(requiredTags => content.tags.exists(tag => requiredTags.split(",").contains(tag.id)))
     println("Content section " + content.sectionId)
     println("Content tags " + content.tags.map(_.id).mkString(", "))
