@@ -58,10 +58,9 @@ object Lambda extends Logging {
     val ruleEngine = RuleEngine.fromGrid(ruleData)
 
     val eventual = for {
-
-      response <- contentClient.getResponse(ItemQuery(capiId))
+      response <- contentClient.getResponse(ItemQuery(capiId).showTags("all"))
     } yield {
-      ruleEngine.findRecommendations(com.theguardian.content.rules.model.Context(response.content.get)).mkString(",")
+      ruleEngine.findRecommendations(com.theguardian.content.rules.model.Context(response.content.get), 5).mkString(",")
     }
 
     Await.result(eventual, 40.seconds)

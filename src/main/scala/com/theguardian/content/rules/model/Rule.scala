@@ -4,7 +4,16 @@ case class Rule(criteriaByName: Map[String, String], recommendation: String) {
   def isSatisfiedByContext(context: Context): Boolean = {
     val content = context.content
 
-    criteriaByName.get("if-in-section").forall(requiredSection => content.section.exists(_.id == requiredSection))
+    val inSection = criteriaByName.get("if-in-section").forall(requiredSection => content.sectionId.contains(requiredSection))
+    val notInSection = criteriaByName.get("unless-in-section").forall(excludeSection => content.section.forall(_.id != excludeSection))
+    val hasTag = criteriaByName.get("if-has-any-tag-of").forall(requiredTags => content.tags.exists(tag => requiredTags.split(",").contains(tag.id)))
+    println("Content section " + content.sectionId)
+    println("Content tags " + content.tags.map(_.id).mkString(", "))
+    println(s"inSection $inSection NotInSection $notInSection hasTag $hasTag Recommendation $recommendation")
+    inSection &&
+      notInSection &&
+      hasTag
+    // if-has-any-tag-of	if-is-edition	unless-is-edition	if-in-section	unless-in-section
   }
 
 }

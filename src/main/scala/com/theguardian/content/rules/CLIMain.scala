@@ -9,5 +9,5 @@ package com.theguardian.content.rules
  * vals are not initialised by the time we come to service the request?!
  */
 @main def main(capiId: String, spreadsheetId: String): Unit = {
-  println(Lambda.go(capiId, spreadsheetId))
+  println("Recommendation: " + Lambda.go(capiId, spreadsheetId))
 }
