@@ -65,7 +65,7 @@ Object {
           },
         },
         "Handler": "com.theguardian.content.rules.Lambda::handler",
-        "MemorySize": 1024,
+        "MemorySize": 2048,
         "Role": Object {
           "Fn::GetAtt": Array [
             "mylambdaServiceRoleEF0A78B7",

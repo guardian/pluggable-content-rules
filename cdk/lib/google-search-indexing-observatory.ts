@@ -16,6 +16,7 @@ export class PluggableContentRules extends GuStack {
       fileName: "pluggable-content-rules.jar",
       handler: "com.theguardian.content.rules.Lambda::handler",
       runtime: Runtime.JAVA_11,
+      memorySize: 2048,
       monitoringConfiguration: noMonitoring,
       app: "pluggable-content-rules",
       api: {
