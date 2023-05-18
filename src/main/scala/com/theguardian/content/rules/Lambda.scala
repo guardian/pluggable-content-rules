@@ -82,7 +82,7 @@ object Lambda extends Logging {
    * Lambda's entry point
    */
   def handler(request: ApiGatewayRequest): ApiGatewayResponse = {
-    ApiGatewayResponse(200, Map("Content-Type"->"application/json", "Cache-Control"->"max-age=20, stale-while-revalidate=6, stale-if-error=864000"
+    ApiGatewayResponse(200, Map("Content-Type"->"application/json", "Cache-Control"->"max-age=20, stale-while-revalidate=1, stale-if-error=864000"
     ) , go(request.queryStringParamMap("capi-id"), request.queryStringParamMap("spreadsheet-id")))
   }
 
