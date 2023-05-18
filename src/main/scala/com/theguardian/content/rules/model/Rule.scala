@@ -11,7 +11,7 @@ case class Rule(criteriaByName: Map[String, String], recommendation: String) {
 
 object Rule {
   def from(headerRow: Seq[String], ruleRow: Seq[String]): Option[Rule] = {
-    val valuesByName = headerRow.zip(ruleRow).toMap.filter(_._2.isBlank)
+    val valuesByName = headerRow.zip(ruleRow).toMap.filter(! _._2.isBlank)
     println(valuesByName)
     for {
       recommendation <- valuesByName.get("recommendation")
