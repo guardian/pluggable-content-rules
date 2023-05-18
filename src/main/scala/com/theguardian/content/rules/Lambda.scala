@@ -17,6 +17,7 @@ import com.theguardian.aws.apigateway.ApiGatewayRequest
 import com.theguardian.aws.apigateway.ApiGatewayResponse
 import com.theguardian.content.rules.logging.Logging
 import upickle.default._
+import upickle.default.{ReadWriter => RW, macroRW}
 
 import java.io.ByteArrayInputStream
 import java.net.URI
@@ -40,6 +41,11 @@ import scala.jdk.FutureConverters.*
 import scala.util.Failure
 import scala.util.Success
 
+case class RecomendationResponse(capiId:String, webTitle:String, recommendations: Seq[String])
+object RecomendationResponse{
+  implicit val rw: RW[RecomendationResponse] = macroRW
+}  
+    
 object Lambda extends Logging {
 //
 //  val googleSearchService: GoogleSearchService = {
@@ -65,8 +71,8 @@ object Lambda extends Logging {
     val eventual = for {
       response <- contentClient.getResponse(ItemQuery(capiId).showTags("all"))
     } yield {
-      
-      write(ruleEngine.findRecommendations(com.theguardian.content.rules.model.Context(response.content.get), 5)):String
+      val content = response.content.get
+      write(RecomendationResponse(capiId, content.webTitle, ruleEngine.findRecommendations(com.theguardian.content.rules.model.Context(content), 5)))
     }
 
     Await.result(eventual, 40.seconds)
