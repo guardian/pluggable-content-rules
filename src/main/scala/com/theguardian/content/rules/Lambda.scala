@@ -1,6 +1,5 @@
 package com.theguardian.content.rules
 
-import Credentials.fetchKeyFromParameterStore
 import cats.data.EitherT
 import cats.implicits.*
 import com.amazonaws.services.lambda.runtime.Context
@@ -8,23 +7,20 @@ import com.amazonaws.services.lambda.runtime.events.ScheduledEvent
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.sheets.v4.Sheets
-import com.google.api.services.sheets.v4.SheetsScopes
+import com.google.api.services.sheets.v4.{Sheets, SheetsScopes}
 import com.gu.contentapi.client.GuardianContentClient
 import com.gu.contentapi.client.model.ItemQuery
 import com.madgag.scala.collection.decorators.*
-import com.theguardian.aws.apigateway.ApiGatewayRequest
-import com.theguardian.aws.apigateway.ApiGatewayResponse
+import com.theguardian.aws.apigateway.{ApiGatewayRequest, ApiGatewayResponse}
+import com.theguardian.content.rules.Credentials.fetchKeyFromParameterStore
 import com.theguardian.content.rules.logging.Logging
-import upickle.default._
-import upickle.default.{ReadWriter => RW, macroRW}
+import upickle.default.{macroRW, ReadWriter as RW, *}
 
 import java.io.ByteArrayInputStream
 import java.net.URI
-import java.net.http.HttpClient
 import java.net.http.HttpClient.Redirect
 import java.net.http.HttpClient.Version.HTTP_2
-import java.net.http.HttpRequest
+import java.net.http.{HttpClient, HttpRequest}
 import java.net.http.HttpResponse.BodyHandlers
 import java.nio.charset.StandardCharsets
 import java.time.Clock
@@ -32,14 +28,12 @@ import java.time.Clock.systemUTC
 import java.time.Duration.ofSeconds
 import java.util.Collections
 import scala.beans.BeanProperty
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.*
 import scala.jdk.CollectionConverters.*
 import scala.jdk.FutureConverters.*
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 case class RecomendationResponse(capiId:String, webTitle:String, recommendations: Seq[String])
 object RecomendationResponse{
@@ -81,9 +75,9 @@ object Lambda extends Logging {
   /*
    * Lambda's entry point
    */
-  def handler(request: ApiGatewayRequest): ApiGatewayResponse = {
-    ApiGatewayResponse(200, Map("Content-Type"->"application/json", "Cache-Control"->"max-age=20, stale-while-revalidate=1, stale-if-error=864000"
-    ) , go(request.queryStringParamMap("capi-id"), request.queryStringParamMap("spreadsheet-id")))
-  }
-
+  def handler(request: ApiGatewayRequest): ApiGatewayResponse = ApiGatewayResponse(200, Map(
+    "Content-Type" -> "application/json",
+    "Cache-Control" -> "max-age=20, stale-while-revalidate=1, stale-if-error=864000",
+    "X-Git-Commit-Id" -> BuildInfo.gitCommitId
+  ), go(request.queryStringParamMap("capi-id"), request.queryStringParamMap("spreadsheet-id")))
 }

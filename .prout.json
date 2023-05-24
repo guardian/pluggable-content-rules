@@ -1,0 +1,8 @@
+{
+  "checkpoints": {
+    "PROD": {
+      "url": "https://cake.guardianapis.com/prod/?capi-id=food/2023/may/17/how-to-make-ceviche-recipe-felicity-cloake&spreadsheet-id=1xwMDLhf7TtbBdBqm7fhB0ynjAXRejmYUtztKKSGm0Fg",
+      "overdue": "15M"
+    }
+  }
+}
