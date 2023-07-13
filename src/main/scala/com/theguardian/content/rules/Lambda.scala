@@ -9,19 +9,22 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.{Sheets, SheetsScopes}
 import com.gu.contentapi.client.GuardianContentClient
-import com.gu.contentapi.client.model.ItemQuery
+import com.gu.contentapi.client.model.{ItemQuery, SearchQuery}
 import com.madgag.scala.collection.decorators.*
 import com.theguardian.aws.apigateway.{ApiGatewayRequest, ApiGatewayResponse}
+import com.theguardian.capi.CapiId.*
+import com.theguardian.capi.{CapiContentCache, CapiId}
 import com.theguardian.content.rules.Credentials.fetchKeyFromParameterStore
 import com.theguardian.content.rules.logging.Logging
-import upickle.default.{macroRW, ReadWriter as RW, *}
+import com.theguardian.content.rules.model.*
+import upickle.default.{ReadWriter as RW, *}
 
 import java.io.ByteArrayInputStream
 import java.net.URI
 import java.net.http.HttpClient.Redirect
 import java.net.http.HttpClient.Version.HTTP_2
-import java.net.http.{HttpClient, HttpRequest}
 import java.net.http.HttpResponse.BodyHandlers
+import java.net.http.{HttpClient, HttpRequest}
 import java.nio.charset.StandardCharsets
 import java.time.Clock
 import java.time.Clock.systemUTC
@@ -29,45 +32,40 @@ import java.time.Duration.ofSeconds
 import java.util.Collections
 import scala.beans.BeanProperty
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.*
+import scala.concurrent.{Await, Future}
 import scala.jdk.CollectionConverters.*
 import scala.jdk.FutureConverters.*
 import scala.util.{Failure, Success}
+import model.*
 
-case class RecomendationResponse(capiId:String, webTitle:String, recommendations: Seq[String])
-object RecomendationResponse{
-  implicit val rw: RW[RecomendationResponse] = macroRW
-}  
-    
+
 object Lambda extends Logging {
-//
-//  val googleSearchService: GoogleSearchService = {
-//    val apiKey = fetchKeyFromParameterStore("Google/CustomSearch/ApiKey")
-//    new GoogleSearchService(apiKey)
-//  }
-
   val contentClient: GuardianContentClient = {
     val capiKey = fetchKeyFromParameterStore("capi-key")
     new GuardianContentClient(capiKey)
   }
 
+  private val capiContentCache = new CapiContentCache(contentClient, _.showTags("all"))
+
   /*
    * Logic handler
    */
-  def go(capiId:String, spreadsheetId: String): String = {
-
-    val ruleData = SpreadsheetService.getData(spreadsheetId)
-    //ruleData.foreach(rule => rule.foreach(println(_)))
-    println(ruleData.mkString("\n"))
-    val ruleEngine = RuleEngine.fromGrid(ruleData)
+  def go(capiId: CapiId, spreadsheetId: String): String = {
+    val contentF = capiContentCache.cache.get(capiId)
+    val spreadsheetRuleEngineOptF = new SpreadsheetRuleEngineService().ruleEngineFor(spreadsheetId)
 
     val eventual = for {
-      response <- contentClient.getResponse(ItemQuery(capiId).showTags("all"))
-    } yield {
-      val content = response.content.get
-      write(RecomendationResponse(capiId, content.webTitle, ruleEngine.findRecommendations(com.theguardian.content.rules.model.Context(content), 5)))
-    }
+      contentOpt <- contentF
+      spreadsheetRuleEngineOpt <- spreadsheetRuleEngineOptF
+    } yield write(RecommendationResponse(
+      contentOpt.map(ContentSummary.summaryFor),
+      spreadsheetRuleEngineOpt.map(_.spreadsheetSummary),
+      for {
+        content <- contentOpt
+        spreadsheetRuleEngine <- spreadsheetRuleEngineOpt
+      } yield spreadsheetRuleEngine.ruleEngine.findRecommendations(model.Context(content), 5)
+    ))
 
     Await.result(eventual, 40.seconds)
   }
@@ -79,5 +77,8 @@ object Lambda extends Logging {
     "Content-Type" -> "application/json",
     "Cache-Control" -> "max-age=20, stale-while-revalidate=1, stale-if-error=864000",
     "X-Git-Commit-Id" -> BuildInfo.gitCommitId
-  ), go(request.queryStringParamMap("capi-id"), request.queryStringParamMap("spreadsheet-id")))
+  ), go(
+    CapiId(request.queryStringParamMap("capi-id")),
+    request.queryStringParamMap("spreadsheet-id"))
+  )
 }

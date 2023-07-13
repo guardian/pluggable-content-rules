@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.4.5",
   "com.lihaoyi" %% "upickle" % "2.0.0",
   ("com.gu" %% "content-api-client-default" % "19.0.4").cross(CrossVersion.for3Use2_13),
+  "com.github.blemale" %% "scaffeine" % "5.2.1",
 
   "com.google.api-client" % "google-api-client" % "2.2.0",
   "com.google.apis" % "google-api-services-sheets" % "v4-rev20230227-2.0.0",
